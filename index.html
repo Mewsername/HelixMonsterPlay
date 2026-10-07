@@ -1,0 +1,394 @@
+<!doctype html>
+<html lang="en">
+<head>
+<title>Helix Monster Play</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="A mod for Helix: Feed The World where you play the monster, against an AI Helix or a friend online. 18+, heavily WIP.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Helix Monster Play">
+<meta property="og:description" content="Play the monster in Helix: Feed The World, against an AI Helix that fights back or a friend online. 18+, heavily WIP.">
+<meta property="og:url" content="https://mewsername.github.io/HelixMonsterPlay/">
+<meta property="og:image" content="https://mewsername.github.io/HelixMonsterPlay/shots/ezmir.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#9978c9">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@500;700&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap">
+<style>
+/* Layout: one narrow reading column at night; screenshots break out wider, like looking up from a campfire.
+   Two modes (monster / online) behind a switch built like the mod's own in-game choice cards. Single dark look on purpose. */
+:root {
+  --night: #11111b;
+  --panel: #1b1b2a;
+  --line: #2c2c42;
+  --ink: #ecebf5;
+  --muted: #a7a5bf;
+  --monster: #9978c9;
+  --helix: #5c9ed1;
+  --ember: #d4b35e;
+  --rose: #e48c8c;
+  --moss: #63b380;
+  --accent: var(--monster);
+  --display: "Pixelify Sans", "Courier New", monospace;
+  --body: "Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  color-scheme: dark;
+}
+:root[data-mode="online"] { --accent: var(--helix); }
+* { box-sizing: border-box; }
+body { background: var(--night); color: var(--ink); font: 17px/1.6 var(--body); margin: 0; padding: 0 16px; }
+.wrap { max-width: 1040px; margin: 0 auto; padding-block: 28px 64px; }
+.col { max-width: 660px; }
+.stack { display: grid; gap: 14px; }
+h1, h2, h3 { font-family: var(--display); font-weight: 700; text-wrap: balance; margin: 0; line-height: 1.1; }
+h1 { font-size: clamp(2.4rem, 7vw, 4rem); }
+h2 { font-size: clamp(1.7rem, 4.4vw, 2.4rem); }
+h3 { font-size: 1.25rem; font-weight: 500; }
+p { margin: 0; }
+a { color: var(--accent); }
+.muted { color: var(--muted); }
+.tags { display: flex; gap: 8px; flex-wrap: wrap; }
+.tag { display: inline-block; font-family: var(--display); font-size: .85rem; letter-spacing: .06em; text-transform: uppercase; padding: 3px 10px; border-radius: 6px; background: color-mix(in srgb, var(--ember) 18%, transparent); color: var(--ember); }
+.tag.adult { background: color-mix(in srgb, var(--rose) 18%, transparent); color: var(--rose); }
+.hero { display: grid; gap: 18px; }
+.lede { font-size: 1.2rem; max-width: 620px; }
+.lede em { color: var(--monster); font-style: normal; font-weight: 700; }
+.get { display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: center; }
+.dl { display: inline-block; font-family: var(--display); font-size: 1.1rem; color: #fff; background: var(--monster); padding: 8px 18px; border-radius: 10px; border-bottom: 4px solid color-mix(in srgb, var(--monster) 60%, black); text-decoration: none; }
+.dl:hover, .dl:focus-visible { filter: brightness(1.1); outline: 2px solid var(--ink); outline-offset: 2px; }
+img { display: block; max-width: 100%; height: auto; border-radius: 12px; }
+figure { margin: 0; }
+figcaption { color: var(--muted); font-size: .92rem; margin-top: 8px; }
+section { margin-top: 72px; display: grid; gap: 18px; }
+
+/* the mode switch: two choice cards, like the mod's "Play online" panel */
+.pick { margin-top: 40px; font-size: 1.1rem; color: var(--muted); }
+.pick-big { font-family: var(--display); font-size: 1.5rem; color: var(--ember); margin-right: 6px; }
+.modes { margin-top: 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.mode { --c: var(--monster); text-align: left; font: inherit; color: var(--ink); cursor: pointer; position: relative;
+  display: grid; gap: 4px; padding: 16px 20px 16px 18px; border: 0; border-radius: 14px;
+  background: color-mix(in srgb, var(--c) 14%, var(--panel)); border-left: 7px solid color-mix(in srgb, var(--c) 45%, var(--panel));
+  border-bottom: 4px solid rgba(0,0,0,.35); opacity: .7; transition: opacity .15s, transform .15s, background-color .15s; }
+.mode.online { --c: var(--helix); }
+.mode .t { font-family: var(--display); font-size: 1.6rem; line-height: 1.1; }
+.mode .d { color: var(--muted); font-size: .95rem; }
+.mode:hover { opacity: .9; transform: translateY(-2px); }
+.mode[aria-selected="true"] { opacity: 1; background: color-mix(in srgb, var(--c) 30%, var(--panel)); border-left-color: var(--c); }
+.mode[aria-selected="true"] .d { color: var(--ink); }
+.mode:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+/* a badge on each card saying which one you're looking at and that the other one is clickable */
+.mode::after { justify-self: start; margin-top: 8px; font-family: var(--display); font-size: .85rem; letter-spacing: .04em;
+  padding: 2px 10px; border-radius: 6px; content: "Click to switch \2192"; color: var(--ink);
+  background: color-mix(in srgb, var(--c) 40%, transparent); }
+.mode[aria-selected="true"]::after { content: "\25B8  Showing now"; background: var(--c); color: #fff; }
+.mode[aria-selected="false"]::after { animation: nudge 1.6s ease-in-out 1s 3; }
+@keyframes nudge { 0%, 100% { transform: none; } 50% { transform: translateX(5px); } }
+
+/* small sticky switch that shows up once the big cards are scrolled away */
+.mini { position: fixed; left: 50%; top: calc(env(safe-area-inset-top, 0px) + 10px); z-index: 10;
+  display: flex; align-items: center; gap: 6px; padding: 6px 6px 6px 14px; max-width: calc(100% - 24px);
+  background: color-mix(in srgb, var(--panel) 92%, transparent); border: 1px solid var(--line); border-radius: 12px;
+  box-shadow: 0 6px 24px rgba(0,0,0,.45); backdrop-filter: blur(6px);
+  transform: translate(-50%, -140%); transition: transform .25s ease; }
+.mini.on { transform: translate(-50%, 0); }
+.mini-label { font-family: var(--display); font-size: .85rem; color: var(--muted); white-space: nowrap; }
+.mini-btn { --c: var(--monster); font: 500 .95rem var(--display); color: var(--ink); cursor: pointer; white-space: nowrap;
+  border: 0; border-radius: 8px; padding: 6px 12px; background: transparent; }
+.mini-btn.online { --c: var(--helix); }
+.mini-btn:hover { background: color-mix(in srgb, var(--c) 22%, transparent); }
+.mini-btn[aria-pressed="true"] { background: var(--c); color: #fff; }
+.mini-btn:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+@media (max-width: 480px) { .mini-label { display: none; } .mini-btn { font-size: .85rem; padding: 6px 9px; } }
+.panel { margin-top: 28px; }
+.panel > section:first-child { margin-top: 0; }
+.panel:not([hidden]) { animation: rise .32s ease-out; }
+@keyframes rise { from { transform: translateY(10px); } to { transform: none; } }
+@media (prefers-reduced-motion: reduce) { .panel:not([hidden]) { animation: none; } .mode, .mini { transition: none; } .mode::after { animation: none !important; } }
+
+.who { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.chip { font-family: var(--display); font-size: .95rem; padding: 4px 12px; border-radius: 8px; color: #fff; }
+.chip.m { background: var(--monster); }
+.chip.h { background: var(--helix); }
+.vs { color: var(--muted); font-family: var(--display); }
+.pair { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.pair > * { min-width: 0; }
+ul.feel { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; }
+ul.feel li::marker { color: var(--accent); }
+.steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; align-items: start; }
+.steps figure { min-width: 0; }
+.num { font-family: var(--display); color: var(--ember); }
+.ways { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.way { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px; display: grid; gap: 6px; align-content: start; min-width: 0; }
+.way h3 { color: var(--c); }
+.way.steam { --c: var(--moss); }
+.way.code { --c: var(--helix); }
+.way .codeword { font-family: var(--display); color: var(--ember); letter-spacing: .04em; }
+.keys { display: grid; grid-template-columns: max-content 1fr; gap: 6px 14px; align-items: baseline; }
+.keys kbd { font-family: var(--display); font-size: .85rem; background: var(--panel); border: 1px solid var(--line); border-bottom-width: 3px; border-radius: 6px; padding: 1px 8px; color: var(--ink); white-space: nowrap; }
+.monsters { display: flex; flex-wrap: wrap; gap: 8px; }
+.monsters span { font-family: var(--display); padding: 3px 12px; border-radius: 8px; background: var(--panel); border: 1px solid var(--line); }
+.next { justify-self: start; font-family: var(--display); font-size: 1.05rem; text-decoration: none; color: var(--ink); background: var(--panel); border: 1px solid var(--line); border-left: 5px solid var(--c, var(--accent)); border-radius: 10px; padding: 8px 16px; }
+.next:hover, .next:focus-visible { background: color-mix(in srgb, var(--c, var(--accent)) 18%, var(--panel)); outline: none; }
+.next.to-online { --c: var(--helix); }
+.next.to-monster { --c: var(--monster); }
+.common { margin-top: 88px; padding-top: 8px; border-top: 1px solid var(--line); }
+.wip { border: 1px dashed var(--ember); border-radius: 12px; padding: 18px 20px; display: grid; gap: 8px; background: color-mix(in srgb, var(--ember) 7%, transparent); }
+.wip h3 { color: var(--ember); }
+ol.install { margin: 0; padding-left: 1.3em; display: grid; gap: 8px; }
+code { font-family: ui-monospace, Consolas, monospace; font-size: .9em; background: var(--panel); border: 1px solid var(--line); padding: 1px 6px; border-radius: 5px; overflow-wrap: anywhere; }
+footer { margin-top: 72px; color: var(--muted); font-size: .9rem; display: grid; gap: 6px; }
+@media (max-width: 720px) {
+  .pair, .steps, .ways { grid-template-columns: 1fr; }
+  .modes { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="hero">
+    <div class="tags"><span class="tag">v1.7.1 &middot; very much a work in progress</span><span class="tag adult">18+ only</span></div>
+    <h1>Helix Monster Play</h1>
+    <p class="lede">A mod for <strong>Helix: Feed The World</strong> that flips the game around. For once, <em>you're the monster</em>, and Helix is the one trying to survive.</p>
+    <p class="get"><a class="dl" href="https://github.com/Mewsername/HelixMonsterPlay/releases/latest/download/HelixMonsterPlay.zip">Download the mod</a><span class="muted">v1.7.1 &middot; unzip into your game folder</span></p>
+  </header>
+
+  <p class="pick"><span class="pick-big">Two ways to play.</span> Pick one to see how it works:</p>
+  <div class="modes" id="modes" role="tablist" aria-label="How you play">
+    <button class="mode monster" role="tab" id="tab-monster" data-mode="monster" aria-controls="panel-monster" aria-selected="true">
+      <span class="t">Play as the monster</span>
+      <span class="d">You against an AI Helix that fights back.</span>
+    </button>
+    <button class="mode online" role="tab" id="tab-online" data-mode="online" aria-controls="panel-online" aria-selected="false" tabindex="-1">
+      <span class="t">Play online</span>
+      <span class="d">One of you is Helix, the other the monster.</span>
+    </button>
+  </div>
+
+  <nav class="mini" id="mini" aria-label="Switch between the two ways to play">
+    <span class="mini-label">Showing:</span>
+    <button type="button" class="mini-btn monster" data-mode="monster">Play as the monster</button>
+    <button type="button" class="mini-btn online" data-mode="online">Play online</button>
+  </nav>
+
+  <div class="panel" id="panel-monster" role="tabpanel" aria-labelledby="tab-monster">
+    <section>
+      <figure>
+        <img src="shots/ezmir.jpg" width="1600" height="900" alt="Playing as Ezmir at sunset while Helix pets it, with the mod's move card on the right">
+        <figcaption>Playing Ezmir. Your moves are on the card to the right, and the line under your name shows what Helix is up to (here: petting you).</figcaption>
+      </figure>
+      <div class="who"><span class="chip m">You</span><span class="vs">vs</span><span class="chip h">AI Helix</span></div>
+      <h2>Hunt an AI that fights back</h2>
+      <div class="col stack">
+        <p>Pick a stage and you control the monster. Its attacks, grabs and special moves are all yours, and Tab shows the full list.</p>
+        <p>Helix is played by an AI, and I tried hard to make it feel like a person on the other end rather than a punching bag:</p>
+        <ul class="feel">
+          <li>It circles, feints, dodges your swings and punishes when you miss.</li>
+          <li>It learns your attacks over the fight, so the same trick won't work forever.</li>
+          <li>It gets scared, cocky or friendly depending on how you treat it. Pet it, then bite it, and it remembers.</li>
+          <li>F7 changes its personality: Brave, Friendly, Timid, Submissive, or Mixed.</li>
+        </ul>
+      </div>
+      <div class="pair">
+        <figure>
+          <img src="shots/sholstim.jpg" width="1600" height="900" alt="Helix petting Sholstim on a sunlit staircase" loading="lazy">
+          <figcaption>Sholstim, with a friendly Helix walking up to pet it.</figcaption>
+        </figure>
+        <figure>
+          <img src="shots/yama.jpg" width="1600" height="900" alt="Yama on an icy bridge with Helix nearby" loading="lazy">
+          <figcaption>Yama on the ice bridge. Helix keeps its distance and catches its breath.</figcaption>
+        </figure>
+      </div>
+      <figure>
+        <img src="shots/gridiron.jpg" width="1600" height="900" alt="Gridiron in a lava cave with belly controls on the card and struggle arrows at the bottom right" loading="lazy">
+        <figcaption>Gridiron with Helix inside. The card switches to belly controls, and the arrows show what the AI Helix is trying to do.</figcaption>
+      </figure>
+    </section>
+
+    <section>
+      <h2>Works with every monster</h2>
+      <div class="monsters"><span>Wolfo</span><span>Ezmir</span><span>Yama</span><span>Gridiron</span><span>Meilu</span><span>Sholstim</span></div>
+      <div class="pair">
+        <figure>
+          <img src="shots/wolfo.jpg" width="1600" height="900" alt="Wolfo in the forest at night with Helix beside it" loading="lazy">
+          <figcaption>Wolfo in the forest.</figcaption>
+        </figure>
+        <figure>
+          <img src="shots/meilu.jpg" width="1600" height="900" alt="Meilu lounging under a beach umbrella while Helix watches" loading="lazy">
+          <figcaption>Meilu on her beach, with her own set of moves on the card.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="col">
+      <h2>Controls</h2>
+      <div class="keys">
+        <kbd>WASD</kbd><span>Move (Shift to sprint)</span>
+        <kbd>Left click</kbd><span>Attack</span>
+        <kbd>Right click</kbd><span>Grab</span>
+        <kbd>R</kbd><span>Special move</span>
+        <kbd>Space</kbd><span>Dodge</span>
+        <kbd>Tab</kbd><span>Full move list, then 1&ndash;0 to use any move</span>
+        <kbd>F7</kbd><span>Change Helix's personality</span>
+      </div>
+      <p class="muted">Controllers work too.</p>
+      <a class="next to-online" href="#online" data-goto="online">Want a real opponent? Play online &rarr;</a>
+    </section>
+  </div>
+
+  <div class="panel" id="panel-online" role="tabpanel" aria-labelledby="tab-online">
+    <section>
+      <div class="pair">
+        <figure>
+          <img src="shots/online_helix.jpg" width="1600" height="900" alt="The Helix player's view, face to face with Wolfo">
+          <figcaption>The Helix player's screen, face to face with Wolfo.</figcaption>
+        </figure>
+        <figure>
+          <img src="shots/online_monster.jpg" width="1600" height="900" alt="The monster player's view of Wolfo chasing Helix">
+          <figcaption>The Wolfo player's screen in the same fight.</figcaption>
+        </figure>
+      </div>
+      <div class="who"><span class="chip h">Friend</span><span class="vs">vs</span><span class="chip m">You</span></div>
+      <h2>Play against a friend</h2>
+      <div class="col stack">
+        <p>One of you plays Helix, the other plays the monster, each on your own PC with your own camera. You meet in a lobby, chat, pick a stage, and the host starts the fight. You can keep chatting during the fight too.</p>
+        <p>You both need the same version of the mod. Open <strong>Play online</strong> in the main menu.</p>
+      </div>
+    </section>
+
+    <section>
+      <h2>Getting into a game</h2>
+      <div class="steps">
+        <figure>
+          <img src="shots/panel_start.jpg" width="740" height="330" alt="Play online page with Steam and Join code buttons" loading="lazy">
+          <figcaption><span class="num">1.</span> Pick Steam or a join code.</figcaption>
+        </figure>
+        <figure>
+          <img src="shots/panel_host.jpg" width="740" height="400" alt="Host page asking whether you play the monster or Helix" loading="lazy">
+          <figcaption><span class="num">2.</span> Host and pick who you play, or join your friend.</figcaption>
+        </figure>
+        <figure>
+          <img src="shots/panel_lobby.jpg" width="840" height="520" alt="Lobby with both players, the stage list and chat" loading="lazy">
+          <figcaption><span class="num">3.</span> Chat, pick a stage, and start once your friend is ready.</figcaption>
+        </figure>
+      </div>
+      <div class="ways">
+        <div class="way steam">
+          <h3>Steam</h3>
+          <p>The easiest way. The host invites you from the lobby, or you find them under <strong>Steam &gt; Join</strong>. Both of you need Steam running.</p>
+          <p class="muted">While you use it, Steam shows you as playing "Spacewar". That's normal, the mod borrows Valve's free test app for invites.</p>
+        </div>
+        <div class="way code">
+          <h3>Join code</h3>
+          <p>No Steam needed. The host's router opens the port by itself and the lobby shows a short code like <span class="codeword">K7F2Q-9QXA3-M</span> to copy and send.</p>
+          <p class="muted">Some routers don't allow this. The lobby tells you when that happens, and Steam still works.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="col">
+      <h2>In the fight</h2>
+      <div class="keys">
+        <kbd>Enter</kbd><span>Open the chat line, Enter again to send</span>
+        <kbd>Esc</kbd><span>Close the chat line without sending</span>
+      </div>
+      <p>Everything else is the normal controls for whoever you play. When the host goes back to the menu, you both land in the lobby for the next round.</p>
+      <a class="next to-monster" href="#monster" data-goto="monster">Rather play solo? Play as the monster &rarr;</a>
+    </section>
+  </div>
+
+  <div class="common">
+    <section class="col">
+      <h2>Install</h2>
+      <ol class="install">
+        <li><a href="https://github.com/Mewsername/HelixMonsterPlay/releases/latest/download/HelixMonsterPlay.zip">Download the mod</a> and run the game once. It already comes with BepInEx, so there's nothing else to get.</li>
+        <li>Unzip the download into your game folder, the one with <code>HelixFTW.exe</code>.</li>
+        <li>Start the game and get past the 18+ notice and the title screen. The main menu now has two new buttons.</li>
+      </ol>
+      <figure>
+        <img src="shots/menu.jpg" width="1000" height="440" alt="The main menu with the new Mode: Monster and Play online buttons" loading="lazy">
+        <figcaption><strong>Mode</strong> switches between playing the monster, just watching, and normal Helix (F6 works too). <strong>Play online</strong> opens the online panel.</figcaption>
+      </figure>
+      <p>To uninstall, delete <code>BepInEx\plugins\HelixMonsterPlay</code>.</p>
+    </section>
+
+    <section class="col">
+      <div class="wip">
+        <h3>Heads up: this is heavily WIP</h3>
+        <p>Expect bugs, especially online. Some moves only work in their original setup, and the AI still does odd things now and then.</p>
+        <p>If something breaks, send me <code>BepInEx\LogOutput.log</code> from your game folder and tell me what you were doing.</p>
+      </div>
+    </section>
+
+    <footer>
+      <p>Like the game itself, this mod is for adults (18+) only.</p>
+      <p>Helix: Feed The World is made by Serkular, Alsnapz and Crebalt. This mod contains no game files.</p>
+      <p>Online Steam support uses Steamworks.NET (MIT).</p>
+    </footer>
+  </div>
+</div>
+<script>
+(function () {
+  var tabs = Array.prototype.slice.call(document.querySelectorAll('[role="tab"]'));
+  var panels = { monster: document.getElementById('panel-monster'), online: document.getElementById('panel-online') };
+  var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var minis = Array.prototype.slice.call(document.querySelectorAll('.mini-btn'));
+  var mini = document.getElementById('mini');
+  var modes = document.getElementById('modes');
+
+  // the small switch appears once the big cards have scrolled off the top
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(function (entries) {
+      var e = entries[0];
+      mini.classList.toggle('on', !e.isIntersecting && e.boundingClientRect.top < 0);
+    }).observe(modes);
+  }
+
+  function show(mode, focusTab, remember) {
+    tabs.forEach(function (t) {
+      var on = t.dataset.mode === mode;
+      t.setAttribute('aria-selected', on ? 'true' : 'false');
+      t.tabIndex = on ? 0 : -1;
+      if (on && focusTab) t.focus();
+    });
+    minis.forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.mode === mode ? 'true' : 'false'); });
+    Object.keys(panels).forEach(function (k) { panels[k].hidden = k !== mode; });
+    document.documentElement.dataset.mode = mode;
+    if (remember) { try { history.replaceState(null, '', '#' + mode); } catch (e) {} }
+  }
+
+  tabs.forEach(function (t, i) {
+    t.addEventListener('click', function () { show(t.dataset.mode, false, true); });
+    t.addEventListener('keydown', function (e) {
+      if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+      e.preventDefault();
+      var n = tabs[(i + (e.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length];
+      show(n.dataset.mode, true, true);
+    });
+  });
+
+  minis.forEach(function (b) {
+    b.addEventListener('click', function () {
+      if (b.getAttribute('aria-pressed') === 'true') return;
+      show(b.dataset.mode, false, true);
+      modes.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+    });
+  });
+
+  document.querySelectorAll('[data-goto]').forEach(function (a) {
+    a.addEventListener('click', function (e) {
+      e.preventDefault();
+      show(a.dataset.goto, false, true);
+      document.getElementById('modes').scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+    });
+  });
+
+  window.addEventListener('hashchange', function () {
+    var h = location.hash.slice(1);
+    if (panels[h]) show(h, false, false);
+  });
+
+  var start = location.hash.slice(1);
+  show(panels[start] ? start : 'monster', false, false);
+})();
+</script>
+</body>
+</html>
