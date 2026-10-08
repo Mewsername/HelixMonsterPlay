@@ -22,6 +22,8 @@ Works with Wolfo, Ezmir, Yama, Gridiron, Meilu and Sholstim.
 
 Want it gone? Just delete `BepInEx\plugins\HelixMonsterPlay`.
 
+There's also **Helix Mod Manager** (`HelixModManager.exe`, on the releases page): a small app to play, switch mods on and off, install or update mods by dropping their zip on it, and change their settings without digging through files. It works for any BepInEx mod, not just this one.
+
 ## Controls
 
 | Key | What it does |
@@ -57,7 +59,9 @@ Good to know:
 - Steam will say you're playing "Spacewar" while you use the Steam option. That's normal, the mod borrows Valve's free test app to make invites work. You can turn Steam off with `UseSteam = false` in the config.
 - Code not working? Some routers don't allow opening ports automatically, and some internet providers share one address between lots of people. The lobby tells you if that happens. Use Steam instead, or a Tailscale / ZeroTier / Hamachi network. Windows might also ask to let the game through the firewall the first time you host, just allow it.
 - It's one friend at a time, and the connection isn't encrypted, so only play with people you know.
-- If the connection drops, the friend goes back to the menu and the AI takes over the other character again.
+- When the host starts a fight, their game waits until you've finished loading, so nobody gets a head start.
+- Went back to the menu by accident? Hit **Rejoin the fight** in the lobby.
+- If your friend leaves or their connection drops, your lobby stays open so they can join again. Meanwhile the AI takes over their character.
 - Lock-on doesn't work for a friend playing Helix.
 
 ## Settings
