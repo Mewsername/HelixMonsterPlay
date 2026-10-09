@@ -49,14 +49,14 @@ There's also **Helix Mod Manager** (`HelixModManager.exe`, on the releases page)
 
 1. You both need the same version of the mod. Hit **Play online** in the main menu.
 2. Pick how to connect:
-   - **Steam** (easiest, you both need Steam open): the host picks **Host** and who they want to play, then invites their friend from the lobby. The friend goes to **Steam > Join**, or just accepts the invite.
+   - **Steam** (easiest, you both need Steam open): the host picks **Host** and who they want to play, then invites their friend from the lobby. The invite pops up in the friend's game (they need it open with the mod); they click **Join**, or go to **Steam > Join**.
    - **Join code** (no Steam): the host picks **Host** and the mod opens the port on their router by itself. The lobby shows a code with a **Copy** button. The friend goes to **Join code > Join** and pastes it.
 3. In the lobby you can chat, the host picks the stage and can swap roles. The friend hits **Ready**, the host hits **Start**.
 4. During the fight, Enter opens the chat. When the host goes back to the menu, you both end up in the lobby again.
 
 Good to know:
 
-- Steam will say you're playing "Spacewar" while you use the Steam option. That's normal, the mod borrows Valve's free test app to make invites work. You can turn Steam off with `UseSteam = false` in the config.
+- Steam will say you're playing "Spacewar" while the game is open. That's normal, the mod borrows Valve's free test app for Steam online play. Invites come from inside the game, not from Steam's chat. You can turn Steam off with `UseSteam = false` in the config.
 - Code not working? Some routers don't allow opening ports automatically, and some internet providers share one address between lots of people. The lobby tells you if that happens. Use Steam instead, or a Tailscale / ZeroTier / Hamachi network. Windows might also ask to let the game through the firewall the first time you host, just allow it.
 - It's one friend at a time, and the connection isn't encrypted, so only play with people you know.
 - When the host starts a fight, their game waits until you've finished loading, so nobody gets a head start.
