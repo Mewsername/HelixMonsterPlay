@@ -43,6 +43,8 @@ There's also **Helix Mod Manager** (`HelixModManager.exe`, on the releases page)
 
 **Helix in your belly:** hold left click to fill the belly action arrow, right click for the wait arrow. R spits Helix back out.
 
+**Pushing back:** tap W/A/S/D toward an arrow that takes Helix deeper (or finishes) to fill it, like Helix does with its arrows. Each tap also drags back the escape arrow Helix is pushing, and each of Helix's struggles drags yours back, so it's a tug of war. Hold Shift to push the please arrows instead.
+
 **Carrying Helix:** some monsters carry Helix somewhere, like Yama taking it to her den. You do the walking. A purple light marks the spot, just stand on it.
 
 ## Playing online
