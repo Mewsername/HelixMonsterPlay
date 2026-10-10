@@ -47,6 +47,14 @@ There's also **Helix Mod Manager** (`HelixModManager.exe`, on the releases page)
 
 **Carrying Helix:** some monsters carry Helix somewhere, like Yama taking it to her den. You do the walking. A purple light marks the spot, just stand on it.
 
+## The AI Helix
+
+- It watches your attacks (where they hit and when) and learns to get out of their way: a step back when that's enough, a roll to where the hit won't land when it isn't, and never into a wall or off a ledge.
+- It tries different ways to get at you, like rushing in, circling to your back, baiting a swing or taking a run-up, and sticks with what works against you.
+- Its mood changes with the fight: scared, angry, cocky, exhausted, fond and more. The HUD shows it next to its personality, and it changes how Helix fights and struggles.
+- Inside you it paces itself: if struggling on a tired bar gets it nowhere, it waits for a full stamina bar and then goes all out, and remembers which monsters need that.
+- It remembers you. What it learned about each monster and how you treated it carries over to the next fight: gentle fights build trust, biting it while it pets you makes it hold a grudge. Delete `BepInEx\config\HelixMonsterPlay.helixmemory.txt` to make Helix forget everything.
+
 ## Playing online
 
 1. You both need the same version of the mod. Hit **Play online** in the main menu.
